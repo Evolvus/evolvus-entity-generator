@@ -1,23 +1,33 @@
-# What is {{moduleName}} ?
+# What is evolvus-entity-generator ?
 
-`{{moduleName}}` is a component that encapsulates user management functionality across all Evolvus products.
+`evolvus-entity-generator` is a component that generates standard template code for entites objects across all Evolvus products.
 
 ## Installation
 
 ### Node.js
-`{{moduleName}}` is available on [npm](http://npmjs.org). To install it, type:
+`evolvus-entity-generator` is available on [npm](http://npmjs.org). To install it as a command line utility, type:
 
 ```bash
-$ npm install {{moduleName}} --save
+$ npm install evolvus-entity-generator -g
 ```
 
 ## Code Quality
 Please check the code quality here - https://app.codacy.com/app/Evolvus/{{moduleName}}/dashboard
 ## Usage
 
+$ evolvus-entity-generator --entity <entityName>
 
+```bash
+$ evolvus-entity-generator --entity lookup
+$ Done
+$ Navigate to evolvus-lookup
+$ Run npm install to initilize the project
+$
+$ cd evolvus-lookup
+$ npm install
+```
+This will create a folder named evolvus-lookup with all the template code. Navigate to the directory run npm install add all the dependencies.
 ## Related Projects
-- [evolvus/evolvus-platform-server](https://github.com/Evolvus/evolvus-platform-server)
 
 ## Contributing
 Thank you very much for considering to contribute!
