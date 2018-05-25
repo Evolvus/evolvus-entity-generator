@@ -12,6 +12,7 @@ function initialize(orgName, entity) {
 
 function initContext(orgName, entity) {
   const context = {
+    "entity": entity,
     "moduleName": `${orgName}-${entity}`
   };
   return context;
@@ -33,7 +34,8 @@ function createDirStructure(context) {
     context.moduleName,
     context.moduleName + "/db",
     context.moduleName + "/model",
-    context.moduleName + "/test"
+    context.moduleName + "/test",
+    context.moduleName + "/test/db"
   ];
 
   /*
@@ -59,7 +61,9 @@ function addFiles(context) {
     var templateText = fs.readFileSync(fileName)
       .toString();
     var text = moustache.render(templateText, context);
-    fs.writeFileSync(fileName.replace(__dirname + "/templates", baseFolder), text, {
+    var destinationFileName = fileName.replace(__dirname + "/templates", baseFolder)
+      .replace("entity", context.entity);
+    fs.writeFileSync(destinationFileName, text, {
       "flag": "wx"
     });
   });
@@ -73,7 +77,8 @@ function listTemplates() {
     __dirname + "/templates",
     __dirname + "/templates/db",
     __dirname + "/templates/model",
-    __dirname + "/templates/test"
+    __dirname + "/templates/test",
+    __dirname + "/templates/test/db"
   ];
 
   var templates = [];
