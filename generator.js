@@ -11,10 +11,15 @@ function initialize(orgName, entity) {
 };
 
 function initContext(orgName, entity) {
+  var schema=`${entity}`;
+  schema=(schema.charAt(0).toUpperCase())+schema.substring(1,schema.length);
   const context = {
     "entity": entity,
-    "moduleName": `${orgName}-${entity}`
+    "moduleName": `${orgName}-${entity}`,
+    "schemaName": `${entity}Schema`,
+    "schemaCollection":schema
   };
+
   return context;
 };
 
