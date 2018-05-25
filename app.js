@@ -32,5 +32,5 @@ const orgName = "evolvus";
 gen.initialize(orgName, entity);
 
 console.log("Done");
-console.log("Navigate to evolvus-", entity);
+console.log(`Navigate to evolvus-${entity}`);
 console.log("Run npm install to initialize the project");
