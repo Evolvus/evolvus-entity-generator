@@ -6,7 +6,7 @@ const ObjectId = require('mongodb')
 const {{schemaName}} = require("./{{schemaName}}");
 
 // Creates a {{schemaCollection}} collection in the database
-var {{schemaCollection}} = mongoose.model({{schemaCollection}}, {{schemaName}});
+var {{schemaCollection}} = mongoose.model("{{schemaCollection}}", {{schemaName}});
 
 // Saves the {{schemaCollection}} object to the database and returns a Promise
 module.exports.save = (object) => {
@@ -14,7 +14,6 @@ module.exports.save = (object) => {
     try {
       // any exception during construction will go to catch
       let {{entity}} = new {{schemaCollection}}(object);
-
       // on resolve we need to resolve the this method
       // on reject or exception we reject it,
       // this is because the record either saves or it doesnt
@@ -52,20 +51,12 @@ module.exports.findAll = () => {
 module.exports.findOne = (attribute, value) => {
   return new Promise((resolve, reject) => {
     try {
-      if (typeof(attribute) == "undefined" || attribute == null || typeof(value) == "undefined" || value == null) {
-        throw new Error("IllegalArgumentException: attribute/value is null or undefined");
-      }
       var query = {};
       query[attribute] = value;
       {{schemaCollection}}.findOne(query)
         .then((data) => {
           debug(`{{entity}} found ${data}`);
-          if (data) {
-            resolve(data);
-          } else {
-            // return empty object in place of null
-            resolve({});
-          }
+          resolve(data);
         }, (err) => {
           debug(`rejected find.. ${err}`);
           reject(err);
@@ -90,20 +81,12 @@ module.exports.findOne = (attribute, value) => {
 module.exports.findById = (id) => {
   return new Promise((resolve, reject) => {
     try {
-      if (typeof(id) == "undefined" || id == null) {
-        throw new Error("IllegalArgumentException: id is null or undefined");
-      }
       {{schemaCollection}}.findById({
           _id: new ObjectId(id)
         })
         .then((res) => {
           debug("successfull: ", res);
-          if (res) {
-            resolve(res);
-          } else {
-            // return empty object in place of null
-            resolve({});
-          }
+          resolve(res);
         }, (err) => {
           debug(`rejected finding {{schemaCollection}}.. ${err}`);
           reject(err);

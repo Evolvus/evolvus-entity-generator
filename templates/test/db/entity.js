@@ -5,7 +5,7 @@ const chaiAsPromised = require("chai-as-promised");
 const expect = chai.expect;
 const {{entity}} = require("../../db/{{entity}}");
 
-var MONGO_DB_URL = process.env.MONGO_DB_URL || "mongodb://localhost/Test";
+var MONGO_DB_URL = process.env.MONGO_DB_URL || "mongodb://localhost/Test{{schemaCollection}}";
 
 chai.use(chaiAsPromised);
 
@@ -170,36 +170,11 @@ describe("db {{entity}} testing", () => {
         .notify(done);
     });
 
-    it("should return empty object i.e. {} as no {{entity}} is identified by this Id ", (done) => {
+    it("should return null as no {{entity}} is identified by this Id ", (done) => {
       let badId = new mongoose.mongo.ObjectId();
       let res = {{entity}}.findById(badId);
       expect(res)
-        .to.eventually.to.eql({})
-        .notify(done);
-    });
-
-    it("should throw IllegalArgumentException for undefined Id parameter ", (done) => {
-      let undefinedId;
-      let res = {{entity}}.findById(undefinedId);
-      expect(res)
-        .to.eventually.to.be.rejectedWith("IllegalArgumentException")
-        .notify(done);
-    });
-
-    it("should throw IllegalArgumentException for null Id parameter ", (done) => {
-      // an id is a 12 byte string, -1 is an invalid id value+
-      let res = {{entity}}.findById(null);
-      expect(res)
-        .to.eventually.to.be.rejectedWith("IllegalArgumentException")
-        .notify(done);
-    });
-
-    it("should be rejected for arbitrary object as Id parameter ", (done) => {
-      // an id is a 12 byte string, -1 is an invalid id value
-      let id = testObject;
-      let res = {{entity}}.findById(id);
-      expect(res)
-        .to.eventually.to.be.rejectedWith("must be a single String of 12 bytes")
+        .to.eventually.to.eql(null)
         .notify(done);
     });
   });
@@ -232,40 +207,10 @@ describe("db {{entity}} testing", () => {
         .notify(done);
     });
 
-    it("should return empty object i.e. {} as no {{entity}} is identified by this attribute ", (done) => {
+    it("should return null as no {{entity}} is identified by this attribute ", (done) => {
       let res = {{entity}}.findOne(validAttribute, invalidValue);
       expect(res)
-        .to.eventually.to.eql({})
-        .notify(done);
-    });
-
-    it("should throw IllegalArgumentException for undefined attribute parameter ", (done) => {
-      let undefinedAttr;
-      let res = {{entity}}.findOne(undefinedAttr, value);
-      expect(res)
-        .to.eventually.to.be.rejectedWith("IllegalArgumentException")
-        .notify(done);
-    });
-
-    it("should throw IllegalArgumentException for undefined value parameter ", (done) => {
-      let undefinedValue;
-      let res = {{entity}}.findOne(attribute, undefinedValue);
-      expect(res)
-        .to.eventually.to.be.rejectedWith("IllegalArgumentException")
-        .notify(done);
-    });
-
-    it("should throw IllegalArgumentException for null attribute parameter ", (done) => {
-      let res = {{entity}}.findOne(null, value);
-      expect(res)
-        .to.eventually.to.be.rejectedWith("IllegalArgumentException")
-        .notify(done);
-    });
-
-    it("should throw IllegalArgumentException for null value parameter ", (done) => {
-      let res = {{entity}}.findOne(attribute, null);
-      expect(res)
-        .to.eventually.to.be.rejectedWith("IllegalArgumentException")
+        .to.eventually.to.eql(null)
         .notify(done);
     });
   });
