@@ -1,24 +1,25 @@
-const debug = require("debug")("evolvus-{{entity}}:db:{{entity}}");
+const debug = require("debug")("{{moduleName}}:db:{{dbEntityFileName}}");
 const mongoose = require("mongoose");
 const ObjectId = require('mongodb')
   .ObjectID;
 
-const {{schemaName}} = require("./{{schemaName}}");
+const {{schemaName}} = require("./{{dbSchemaFileName}}");
 
 // Creates a {{schemaCollection}} collection in the database
 var {{schemaCollection}} = mongoose.model("{{schemaCollection}}", {{schemaName}});
 
 // Saves the {{schemaCollection}} object to the database and returns a Promise
+// The assumption here is that the Object is valid
 module.exports.save = (object) => {
   return new Promise((resolve, reject) => {
     try {
       // any exception during construction will go to catch
-      let {{entity}} = new {{schemaCollection}}(object);
+      let {{camelCaseEntity}} = new {{schemaCollection}}(object);
       // on resolve we need to resolve the this method
       // on reject or exception we reject it,
       // this is because the record either saves or it doesnt
       // in any case it does not save, is a reject
-      {{entity}}.save()
+      {{camelCaseEntity}}.save()
         .then((data) => {
           debug("saved successfully", data._id);
           resolve(data);
@@ -37,14 +38,14 @@ module.exports.save = (object) => {
   });
 };
 
-// Returns all the {{entity}}s with a Promise
+// Returns all the {{camelCaseEntity}}(s) with a Promise
 // if the collectiom has not records it Returns
 // a promise with a result of  empty object i.e. {}
 module.exports.findAll = () => {
   return {{schemaCollection}}.find({});
 };
 
-// Finds the {{entity}} which matches the value parameter from {{entity}} collection
+// Finds the {{camelCaseEntity}} which matches the value parameter from {{camelCaseEntity}} collection
 // If there is no object matching the attribute/value, return empty object i.e. {}
 // null, undefined should be rejected with Invalid Argument Error
 // Should return a Promise
@@ -55,7 +56,7 @@ module.exports.findOne = (attribute, value) => {
       query[attribute] = value;
       {{schemaCollection}}.findOne(query)
         .then((data) => {
-          debug(`{{entity}} found ${data}`);
+          debug(`{{camelCaseEntity}} found ${data}`);
           resolve(data);
         }, (err) => {
           debug(`rejected find.. ${err}`);
@@ -73,7 +74,7 @@ module.exports.findOne = (attribute, value) => {
 };
 
 //
-// Finds the {{entity}} for the id parameter from the {{entity}} collection
+// Finds the {{camelCaseEntity}} for the id parameter from the {{camelCaseEntity}} collection
 // If there is no object matching the id, return empty object i.e. {}
 // null, undefined, invalid objects should be rejected with Invalid Argument Error
 // All returns are wrapped in a Promise
@@ -85,14 +86,14 @@ module.exports.findById = (id) => {
           _id: new ObjectId(id)
         })
         .then((res) => {
-          debug("successfull: ", res);
+          debug("findById successfull: ", res);
           resolve(res);
         }, (err) => {
           debug(`rejected finding {{schemaCollection}}.. ${err}`);
           reject(err);
         })
         .catch((e) => {
-          debug(`exception on finding {{entity}}: ${e}`);
+          debug(`exception on finding {{camelCaseEntity}}: ${e}`);
           reject(e);
         });
     } catch (e) {

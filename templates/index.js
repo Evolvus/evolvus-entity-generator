@@ -1,14 +1,14 @@
-const debug = require("debug")("{{moduleName}}:db:index");
-const {{schemaName}} = require("./model/{{schemaName}}")
+const debug = require("debug")("{{moduleName}}:index");
+const {{schemaName}} = require("./model/{{entityModelFileName}}")
   .schema;
-const {{entity}} = require("./db/{{entity}}");
+const {{schemaCollection}} = require("./db/{{dbEntityFileName}}");
 const validate = require("jsonschema")
   .validate;
 
-module.exports.validate = ({{entity}}Object) => {
+module.exports.validate = ({{camelCaseEntity}}Object) => {
   return new Promise((resolve, reject) => {
     try {
-      var res = validate({{entity}}Object, {{schemaName}});
+      var res = validate({{camelCaseEntity}}Object, {{schemaName}});
       debug("validation status: ", JSON.stringify(res));
       if(res.valid) {
         resolve(res.valid);
@@ -21,16 +21,34 @@ module.exports.validate = ({{entity}}Object) => {
   });
 };
 
-module.exports.save = ({{entity}}Object) => {
+// All validations must be performed before we save the object here
+// Once the db layer is called its is assumed the object is valid.
+module.exports.save = ({{camelCaseEntity}}Object) => {
   return new Promise((resolve, reject) => {
     try {
-      {{entity}}.save({{entity}}Object).then((result) => {
+
+      if(typeof {{camelCaseEntity}}Object === 'undefined' || {{camelCaseEntity}}Object == null) {
+         throw new Error("IllegalArgumentException: {{camelCaseEntity}}Object is null or undefined");
+      } 
+      var res = validate({{camelCaseEntity}}Object, {{schemaName}});
+      debug("validation status: ", JSON.stringify(res));
+      if(res.valid) {
+        resolve(res.valid);
+      } else {
+        reject(res.errors);
+      }
+      // Other validations here
+
+
+      // if the object is valid, save the object to the database
+      {{schemaCollection}}.save({{camelCaseEntity}}Object).then((result) => {
         debug(`saved successfully ${result}`);
         resolve(result);
       }).catch((e) => {
         debug(`failed to save with an error: ${e}`);
         reject(e);
       });
+
     } catch (e) {
       debug(`caught exception ${e}`);
       reject(e);
@@ -38,14 +56,17 @@ module.exports.save = ({{entity}}Object) => {
   });
 };
 
+// List all the objects in the database
+// makes sense to return on a limited number 
+// (what if there are 1000000 records in the collection)
 module.exports.getAll = () => {
   return new Promise((resolve, reject) => {
     try {
-      {{entity}}.findAll().then((docs) => {
-        debug(`{{entity}}s stored in the database are ${docs}`);
+      {{schemaCollection}}.findAll().then((docs) => {
+        debug(`{{camelCaseEntity}}(s) stored in the database are ${docs}`);
         resolve(docs);
       }).catch((e) => {
-        debug(`failed to find all the {{entity}}s ${e}`);
+        debug(`failed to find all the {{entity}}(s) ${e}`);
         reject(e);
       });
     } catch (e) {
@@ -55,26 +76,31 @@ module.exports.getAll = () => {
   });
 };
 
+
+// Get the entity idenfied by the id parameter
 module.exports.getById = (id) => {
   return new Promise((resolve, reject) => {
     try {
+
       if (typeof(id) == "undefined" || id == null) {
         throw new Error("IllegalArgumentException: id is null or undefined");
       }
-      {{entity}}.findById(id)
+
+      {{schemaCollection}}.findById(id)
         .then((res) => {
           if (res) {
-            debug(`{{entity}} found by id ${id} is ${res}`);
+            debug(`{{camelCaseEntity}} found by id ${id} is ${res}`);
             resolve(res);
           } else {
             // return empty object in place of null
-            debug(`no {{entity}} found by this id ${id}`);
+            debug(`no {{camelCaseEntity}} found by this id ${id}`);
             resolve({});
           }
         }).catch((e) => {
-          debug(`failed to find {{entity}} ${e}`);
+          debug(`failed to find {{camelCaseEntity}} ${e}`);
           reject(e);
         });
+
     } catch (e) {
       debug(`caught exception ${e}`);
       reject(e);
@@ -85,16 +111,16 @@ module.exports.getById = (id) => {
 module.exports.getOne=(attribute,value)=> {
   return new Promise((resolve,reject)=> {
     try {
-      if (attribute == null || value == null) {
+      if (attribute == null || value == null || typeof attribute === 'undefined' || typeof value === 'undefined') {
         throw new Error("IllegalArgumentException: attribute/value is null or undefined");
       }
-      {{entity}}.findOne(attribute,value).then((data)=> {
+      {{schemaCollection}}.findOne(attribute,value).then((data)=> {
         if (data) {
-          debug(`{{entity}} found ${data}`);
+          debug(`{{camelCaseEntity}} found ${data}`);
           resolve(data);
         } else {
           // return empty object in place of null
-          debug(`no {{entity}} found by this ${attribute} ${value}`);
+          debug(`no {{camelCaseEntity}} found by this ${attribute} ${value}`);
           resolve({});
         }
       }).catch((e)=> {

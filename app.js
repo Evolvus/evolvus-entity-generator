@@ -6,31 +6,18 @@
  ** Get all the required packages
  */
 const _ = require("underscore");
-const argv = require('minimist')(process.argv.slice(2));
-const fs = require("fs");
-const gen = require("./generator")
-/*
- ** Minimum command line requirement for this CLI application is entity
- ** If that is not provided exit the application.
- */
-if (!_.has(argv, "entity")) {
-  console.log(`Usage: ${process.argv[1]} --entity <entity name> `);
-  console.log(`e.g. ${process.argv[1]} --entity application`);
-  process.exit(-1);
-}
+const program = require('commander');
+const context = require("./context");
+const gen = require("./generator");
 
-/*
- ** Get the entity, now that we are sure it exists in argv
- */
-const entity = _.pick(argv, "entity")
-  .entity;
+program.version('0.1.0')
+  .option('--entity <entity name>', 'Mandatory, Name of the entity, should not contain spaces')
+  .option('--organization-prefix [prefix]', 'Optional, Prefix to be attached to the module, defaults to `evolvus`, should not contain spaces')
+  .parse(process.argv);
 
-const orgName = "evolvus";
-/*
- ** Derive the different values needed for replacement
- */
-gen.initialize(orgName, entity);
+const initializedContext = context.initContext(program);
+gen.initialize(initializedContext);
 
 console.log("Done");
-console.log(`Navigate to evolvus-${entity}`);
+console.log(`Navigate to ${initializedContext.moduleName}`);
 console.log("Run npm install to initialize the project");

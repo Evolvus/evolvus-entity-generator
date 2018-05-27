@@ -1,6 +1,6 @@
 # What is {{moduleName}} ?
 
-`{{moduleName}}` is a component that encapsulates {{moduleName}} management functionality across all Evolvus products.
+`{{moduleName}}` is a component that encapsulates {{initCapEntity}} management functionality across all Evolvus products.
 
 ## Installation
 

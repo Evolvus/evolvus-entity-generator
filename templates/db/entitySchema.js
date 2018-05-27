@@ -3,7 +3,7 @@ const validator = require("validator");
 
 
 var {{schemaName}} = new mongoose.Schema({
-// Add all attributes
+  // Add all attributes below
 
 });
 

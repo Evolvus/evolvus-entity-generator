@@ -4,23 +4,9 @@ const fs = require("fs");
 const moustache = require("moustache");
 
 
-function initialize(orgName, entity) {
-  const context = initContext(orgName, entity);
-  createDirStructure(context);
-  addFiles(context);
-};
-
-function initContext(orgName, entity) {
-  var schema=`${entity}`;
-  schema=(schema.charAt(0).toUpperCase())+schema.substring(1,schema.length);
-  const context = {
-    "entity": entity,
-    "moduleName": `${orgName}-${entity}`,
-    "schemaName": `${entity}Schema`,
-    "schemaCollection":schema
-  };
-
-  return context;
+function initialize(initializedContext) {
+  createDirStructure(initializedContext);
+  addFiles(initializedContext);
 };
 
 /*
@@ -67,7 +53,7 @@ function addFiles(context) {
       .toString();
     var text = moustache.render(templateText, context);
     var destinationFileName = fileName.replace(__dirname + "/templates", baseFolder)
-      .replace("entity", context.entity);
+      .replace("entity", context.camelCaseEntity);
     fs.writeFileSync(destinationFileName, text, {
       "flag": "wx"
     });

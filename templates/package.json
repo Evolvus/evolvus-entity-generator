@@ -12,7 +12,7 @@
   },
   "keywords": [
     "evolvus",
-    "{{entity}}"
+    "{{initCapEntity}}"
   ],
   "author": "Kavya",
   "license": "ISC",
