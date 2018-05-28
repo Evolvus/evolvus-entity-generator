@@ -8,6 +8,9 @@ const validate = require("jsonschema")
 module.exports.validate = ({{camelCaseEntity}}Object) => {
   return new Promise((resolve, reject) => {
     try {
+      if(typeof {{camelCaseEntity}}Object==="undefined" ) {
+        throw new Error("IllegalArgumentException:{{camelCaseEntity}}Object is undefined");
+      }
       var res = validate({{camelCaseEntity}}Object, {{schemaName}});
       debug("validation status: ", JSON.stringify(res));
       if(res.valid) {
