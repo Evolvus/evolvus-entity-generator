@@ -115,7 +115,7 @@ describe('{{camelCaseEntity}} model validation', () => {
       try {
         var result = {{camelCaseEntity}}.save(invalidObject);
         expect(result)
-          .to.be.rejectedWith("{{schemaCollection}} validation failed")
+          .to.be.rejected
           .notify(done);
       } catch (e) {
         expect.fail(e, null, `exception: ${e}`);
@@ -136,15 +136,17 @@ describe('{{camelCaseEntity}} model validation', () => {
       db.deleteAll().then((res) => {
         db.save(object1).then((res) => {
           db.save(object2).then((res) => {
+            db.save(object1).then((res)=> {
               done();
+            });
           });
         });
       });
     });
 
-    it('should return all records', (done) => {
+    it('should return limited records as specified by the limit parameter', (done) => {
       try {
-        let res = {{camelCaseEntity}}.getAll();
+        let res = {{camelCaseEntity}}.getAll(2);
         expect(res)
           .to.be.fulfilled.then((docs) => {
             expect(docs)
@@ -153,6 +155,45 @@ describe('{{camelCaseEntity}} model validation', () => {
               .to.equal(2);
             done();
           });
+      } catch (e) {
+          expect.fail(e, null, `exception: ${e}`);
+      }
+    });
+
+    it('should return all records if limit is -1', (done) => {
+      try {
+        let res = {{camelCaseEntity}}.getAll(-1);
+        expect(res)
+          .to.be.fulfilled.then((docs) => {
+            expect(docs)
+              .to.be.a('array');
+            expect(docs.length)
+              .to.equal(3);
+            done();
+          });
+      } catch (e) {
+          expect.fail(e, null, `exception: ${e}`);
+      }
+    });
+
+    it('should throw IllegalArgumentException for null value of limit', (done) => {
+      try {
+        let res = {{camelCaseEntity}}.getAll(null);
+        expect(res)
+          .to.be.rejectedWith("IllegalArgumentException")
+          .notify(done);
+      } catch (e) {
+          expect.fail(e, null, `exception: ${e}`);
+      }
+    });
+
+    it('should throw IllegalArgumentException for undefined value of limit', (done) => {
+      try {
+        let undefinedLimit;
+        let res = {{camelCaseEntity}}.getAll(undefinedLimit);
+        expect(res)
+          .to.be.rejectedWith("IllegalArgumentException")
+          .notify(done);
       } catch (e) {
           expect.fail(e, null, `exception: ${e}`);
       }
@@ -168,9 +209,27 @@ describe('{{camelCaseEntity}} model validation', () => {
       });
     });
 
-    it('should return empty array', (done) => {
+    it('should return empty array when limit is -1', (done) => {
       try {
-        let res = {{camelCaseEntity}}.getAll();
+        let res = {{camelCaseEntity}}.getAll(-1);
+        expect(res)
+          .to.be.fulfilled.then((docs) => {
+            expect(docs)
+              .to.be.a('array');
+            expect(docs.length)
+              .to.equal(0);
+            expect(docs)
+              .to.eql([]);
+            done();
+          });
+      } catch (e) {
+        expect.fail(e, null, `exception: ${e}`);
+      }
+    });
+
+    it('should return empty array when limit is positive value ', (done) => {
+      try {
+        let res = {{camelCaseEntity}}.getAll(2);
         expect(res)
           .to.be.fulfilled.then((docs) => {
             expect(docs)

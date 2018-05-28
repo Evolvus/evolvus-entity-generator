@@ -29,12 +29,10 @@ module.exports.save = ({{camelCaseEntity}}Object) => {
 
       if(typeof {{camelCaseEntity}}Object === 'undefined' || {{camelCaseEntity}}Object == null) {
          throw new Error("IllegalArgumentException: {{camelCaseEntity}}Object is null or undefined");
-      } 
+      }
       var res = validate({{camelCaseEntity}}Object, {{schemaName}});
       debug("validation status: ", JSON.stringify(res));
-      if(res.valid) {
-        resolve(res.valid);
-      } else {
+      if(!res.valid) {
         reject(res.errors);
       }
       // Other validations here
@@ -57,12 +55,17 @@ module.exports.save = ({{camelCaseEntity}}Object) => {
 };
 
 // List all the objects in the database
-// makes sense to return on a limited number 
+// makes sense to return on a limited number
 // (what if there are 1000000 records in the collection)
-module.exports.getAll = () => {
+module.exports.getAll = (limit) => {
   return new Promise((resolve, reject) => {
     try {
-      {{schemaCollection}}.findAll().then((docs) => {
+
+      if (typeof(limit) == "undefined" || limit == null) {
+        throw new Error("IllegalArgumentException: limit is null or undefined");
+      }
+
+      {{schemaCollection}}.findAll(limit).then((docs) => {
         debug(`{{camelCaseEntity}}(s) stored in the database are ${docs}`);
         resolve(docs);
       }).catch((e) => {

@@ -38,12 +38,6 @@ module.exports.save = (object) => {
   });
 };
 
-// Returns all the {{camelCaseEntity}}(s) with a Promise
-// if the collectiom has no records it Returns
-// a promise with a result of  empty object i.e. {}
-module.exports.findAll = () => {
-  return {{schemaCollection}}.find({});
-};
 
 // Returns a limited set if all the {{camelCaseEntity}}(s) with a Promise
 // if the collectiom has no records it Returns

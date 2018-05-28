@@ -69,48 +69,68 @@ describe("db {{camelCaseEntity}} testing", () => {
     });
   });
 
-  describe("testing {{camelCaseEntity}}.find with data", () => {
+  describe("testing {{camelCaseEntity}}.findAll by limit",()=> {
     // 1. Delete all records in the table and insert
-    //    two new records.
-    // find -should return an array of size 2 with the
-    // two {{camelCaseEntity}}s.
-    // Caveat - the order of the {{camelCaseEntity}}s fetched is indeterminate
+    //    4 new records.
+    // find -should return an array of size equal to value of limit with the
+    // roleMenuItemMaps.
+    // Caveat - the order of the roleMenuItemMaps fetched is indeterminate
 
-    // delete all records and insert two {{camelCaseEntity}}s
-    beforeEach((done) => {
-      {{camelCaseEntity}}.deleteAll()
-        .then((res) => {
-          {{camelCaseEntity}}.save(object1)
-            .then((res) => {
-              {{camelCaseEntity}}.save(object2)
-                .then((res) => {
+    // delete all records and insert four roleMenuItemMaps
+      beforeEach((done)=> {
+        {{camelCaseEntity}}.deleteAll().then(()=> {
+          {{camelCaseEntity}}.save(object1).then((res)=> {
+            {{camelCaseEntity}}.save(object2).then((res)=> {
+              {{camelCaseEntity}}.save(object1).then((res)=> {
+                {{camelCaseEntity}}.save(object2).then((res)=> {
                   done();
                 });
+              });
             });
+          });
         });
-    });
+      });
 
-    it("should return 2 {{camelCaseEntity}}s ", (done) => {
-      let res = {{camelCaseEntity}}.findAll();
-      expect(res)
-        .to.be.fulfilled.then((docs) => {
-          expect(docs)
-            .to.be.a('array');
-          expect(docs.length)
-            .to.equal(2);
-          expect(docs[0])
-            .to.include(object1);
-          done();
-        }, (err) => {
-          done(err);
-        })
-        .catch((e) => {
-          done(e);
-        });
-    });
+      it("should return limited number of records",(done)=> {
+        let res = {{camelCaseEntity}}.findAll(3);
+        expect(res)
+          .to.be.fulfilled.then((docs) => {
+            expect(docs)
+              .to.be.a('array');
+            expect(docs.length)
+              .to.equal(3);
+            expect(docs[0])
+              .to.include(object1);
+            done();
+          }, (err) => {
+            done(err);
+          })
+          .catch((e) => {
+            done(e);
+          });
+      });
+
+      it("should return all records if value of limit parameter is less than 1 i.e, 0 or -1",(done)=> {
+        let res = {{camelCaseEntity}}.findAll(-1);
+        expect(res)
+          .to.be.fulfilled.then((docs) => {
+            expect(docs)
+              .to.be.a('array');
+            expect(docs.length)
+              .to.equal(4);
+            expect(docs[0])
+              .to.include(object1);
+            done();
+          }, (err) => {
+            done(err);
+          })
+          .catch((e) => {
+            done(e);
+          });
+      });
   });
 
-  describe("testing {{camelCaseEntity}}.find without data", () => {
+  describe("testing roleMenuItemMap.find without data", () => {
     // delete all records
     // find should return empty array
     beforeEach((done) => {
@@ -121,7 +141,7 @@ describe("db {{camelCaseEntity}} testing", () => {
     });
 
     it("should return empty array i.e. []", (done) => {
-      let res = {{camelCaseEntity}}.findAll();
+      let res = {{camelCaseEntity}}.findAll(2);
       expect(res)
         .to.be.fulfilled.then((docs) => {
           expect(docs)
@@ -180,19 +200,20 @@ describe("db {{camelCaseEntity}} testing", () => {
   });
 
   describe("testing {{camelCaseEntity}}.findOne", () => {
-    // Delete all records, insert one record , get its id
+    // Delete all records, insert two record
     // 1. Query by one attribute and it should return one {{camelCaseEntity}}
     // 2. Query by an arbitrary attribute value and it should return {}
-    var id;
 
     // delete all records and insert two {{camelCaseEntity}}s
     beforeEach((done) => {
       {{camelCaseEntity}}.deleteAll()
         .then((res) => {
           {{camelCaseEntity}}.save(object1)
-            .then((savedObj) => {
-              id = savedObj._id;
-              done();
+            .then((res) => {
+              {{camelCaseEntity}}.save(object2)
+                .then((savedObj) => {
+                  done();
+                });
             });
         });
     });

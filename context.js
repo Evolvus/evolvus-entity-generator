@@ -74,7 +74,7 @@ module.exports.initContext = (program) => {
     "dbSchemaFileName": `${camelCaseEntity}Schema`, // used for require
     // for model folder files
     "entityModel": `${camelCaseEntity}Model`,
-    "entityModelFileName": `${camelCaseEntity}` //used for require
+    "entityModelFileName": `${camelCaseEntity}Schema` //used for require
   };
 
   return context;
