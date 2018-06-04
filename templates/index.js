@@ -8,9 +8,9 @@ const docketClient=require("evolvus-docket-client");
 
 var docketObject={
   // required fields
-  application="PLATFORM",
-  source="APPLICATION",
-  name="{{camelCaseEntity}}_CREATED",
+  application:"PLATFORM",
+  source:"APPLICATION",
+  name:"{{camelCaseEntity}}_CREATED",
   createdBy:"",
   ipAddress:"",
   status:"SUCCESS", //by default
