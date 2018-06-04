@@ -10,7 +10,7 @@ var docketObject={
   // required fields
   application:"PLATFORM",
   source:"APPLICATION",
-  name:"{{camelCaseEntity}}_CREATED",
+  name:"",
   createdBy:"",
   ipAddress:"",
   status:"SUCCESS", //by default
@@ -48,29 +48,32 @@ module.exports.save = ({{camelCaseEntity}}Object) => {
       if(typeof {{camelCaseEntity}}Object === 'undefined' || {{camelCaseEntity}}Object == null) {
          throw new Error("IllegalArgumentException: {{camelCaseEntity}}Object is null or undefined");
       }
+      docketObject.name="{{camelCaseEntity}}_save"
+      docketObject.keyDataAsJSON={{camelCaseEntity}}Object;
+      docketObject.details=`{{camelCaseEntity}} creation initiated`;
+      docketClient.postToDocket(docketObject);
       var res = validate({{camelCaseEntity}}Object, {{schemaName}});
       debug("validation status: ", JSON.stringify(res));
       if(!res.valid) {
         reject(res.errors);
       }
-      docketObject.keyDataAsJSON={{camelCaseEntity}}Object;
+
       // Other validations here
 
 
       // if the object is valid, save the object to the database
       {{schemaCollection}}.save({{camelCaseEntity}}Object).then((result) => {
         debug(`saved successfully ${result}`);
-        docketObject.details=`{{camelCaseEntity}}  created successfully`;
-        docketClient.postToDocket(docketObject);
         resolve(result);
       }).catch((e) => {
         debug(`failed to save with an error: ${e}`);
-        docketObject.status="FAILURE";
-        docketObject.details=`Failed to create {{camelCaseEntity}}`;
-        docketClient.postToDocket(docketObject);
         reject(e);
       });
     } catch (e) {
+      docketObject.name="{{camelCaseEntity}}_ExceptionOnSave"
+      docketObject.keyDataAsJSON={{camelCaseEntity}}Object;
+      docketObject.details=`caught Exception on {{camelCaseEntity}}_save ${e.message}`;
+      docketClient.postToDocket(docketObject);
       debug(`caught exception ${e}`);
       reject(e);
     }
@@ -86,6 +89,10 @@ module.exports.getAll = (limit) => {
       if (typeof(limit) == "undefined" || limit == null) {
         throw new Error("IllegalArgumentException: limit is null or undefined");
       }
+      docketObject.name="{{camelCaseEntity}}_getAll"
+      docketObject.keyDataAsJSON="{{camelCaseEntity}}Object";
+      docketObject.details=`{{camelCaseEntity}} getAll method`;
+      docketClient.postToDocket(docketObject);
 
       {{schemaCollection}}.findAll(limit).then((docs) => {
         debug(`{{camelCaseEntity}}(s) stored in the database are ${docs}`);
@@ -95,6 +102,10 @@ module.exports.getAll = (limit) => {
         reject(e);
       });
     } catch (e) {
+      docketObject.name="{{camelCaseEntity}}_ExceptionOngetAll"
+      docketObject.keyDataAsJSON="{{camelCaseEntity}}Object";
+      docketObject.details=`caught Exception on {{camelCaseEntity}}_getAll ${e.message}`;
+      docketClient.postToDocket(docketObject);
       debug(`caught exception ${e}`);
       reject(e);
     }
@@ -110,6 +121,10 @@ module.exports.getById = (id) => {
       if (typeof(id) == "undefined" || id == null) {
         throw new Error("IllegalArgumentException: id is null or undefined");
       }
+      docketObject.name="{{camelCaseEntity}}_getById"
+      docketObject.keyDataAsJSON=`{{camelCaseEntity}}Object id is ${id}`;
+      docketObject.details=`{{camelCaseEntity}} getById initiated`;
+      docketClient.postToDocket(docketObject);
 
       {{schemaCollection}}.findById(id)
         .then((res) => {
@@ -127,6 +142,10 @@ module.exports.getById = (id) => {
         });
 
     } catch (e) {
+      docketObject.name="{{camelCaseEntity}}_ExceptionOngetById"
+      docketObject.keyDataAsJSON=`{{camelCaseEntity}}Object id is ${id}`;
+      docketObject.details=`caught Exception on {{camelCaseEntity}}_getById ${e.message}`;
+      docketClient.postToDocket(docketObject);
       debug(`caught exception ${e}`);
       reject(e);
     }
@@ -139,6 +158,11 @@ module.exports.getOne=(attribute,value)=> {
       if (attribute == null || value == null || typeof attribute === 'undefined' || typeof value === 'undefined') {
         throw new Error("IllegalArgumentException: attribute/value is null or undefined");
       }
+
+      docketObject.name="{{camelCaseEntity}}_getOne"
+      docketObject.keyDataAsJSON=`{{camelCaseEntity}}Object ${attribute} with value ${value}`;
+      docketObject.details=`{{camelCaseEntity}} getById initiated`;
+      docketClient.postToDocket(docketObject);
       {{schemaCollection}}.findOne(attribute,value).then((data)=> {
         if (data) {
           debug(`{{camelCaseEntity}} found ${data}`);
@@ -152,6 +176,10 @@ module.exports.getOne=(attribute,value)=> {
         debug(`failed to find ${e}`);
       });
     } catch (e) {
+      docketObject.name="{{camelCaseEntity}}_ExceptionOngetOne"
+      docketObject.keyDataAsJSON="{{camelCaseEntity}}Object";
+      docketObject.details=`caught Exception on {{camelCaseEntity}}_getOne ${e.message}`;
+      docketClient.postToDocket(docketObject);
       debug(`caught exception ${e}`);
       reject(e);
     }
