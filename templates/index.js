@@ -4,6 +4,22 @@ const {{schemaName}} = require("./model/{{entityModelFileName}}")
 const {{schemaCollection}} = require("./db/{{dbEntityFileName}}");
 const validate = require("jsonschema")
   .validate;
+const docketClient=require("evolvus-docket-client");
+
+var docketObject={
+  // required fields
+  application="PLATFORM",
+  source="APPLICATION",
+  name="{{camelCaseEntity}}_CREATED",
+  createdBy:"",
+  ipAddress:"",
+  status:"SUCCESS", //by default
+  eventDateTime:new Date().toISOString(),
+  keyDataAsJSON:"",
+  details:"",
+//non required fields
+  level:""
+};
 
 module.exports.validate = ({{camelCaseEntity}}Object) => {
   return new Promise((resolve, reject) => {
@@ -29,7 +45,6 @@ module.exports.validate = ({{camelCaseEntity}}Object) => {
 module.exports.save = ({{camelCaseEntity}}Object) => {
   return new Promise((resolve, reject) => {
     try {
-
       if(typeof {{camelCaseEntity}}Object === 'undefined' || {{camelCaseEntity}}Object == null) {
          throw new Error("IllegalArgumentException: {{camelCaseEntity}}Object is null or undefined");
       }
@@ -38,18 +53,23 @@ module.exports.save = ({{camelCaseEntity}}Object) => {
       if(!res.valid) {
         reject(res.errors);
       }
+      docketObject.keyDataAsJSON={{camelCaseEntity}}Object;
       // Other validations here
 
 
       // if the object is valid, save the object to the database
       {{schemaCollection}}.save({{camelCaseEntity}}Object).then((result) => {
         debug(`saved successfully ${result}`);
+        docketObject.details=`{{camelCaseEntity}}  created successfully`;
+        docketClient.postToDocket(docketObject);
         resolve(result);
       }).catch((e) => {
         debug(`failed to save with an error: ${e}`);
+        docketObject.status="FAILURE";
+        docketObject.details=`Failed to create {{camelCaseEntity}}`;
+        docketClient.postToDocket(docketObject);
         reject(e);
       });
-
     } catch (e) {
       debug(`caught exception ${e}`);
       reject(e);
@@ -63,7 +83,6 @@ module.exports.save = ({{camelCaseEntity}}Object) => {
 module.exports.getAll = (limit) => {
   return new Promise((resolve, reject) => {
     try {
-
       if (typeof(limit) == "undefined" || limit == null) {
         throw new Error("IllegalArgumentException: limit is null or undefined");
       }
