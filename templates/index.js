@@ -9,12 +9,12 @@ const docketClient=require("evolvus-docket-client");
 var docketObject={
   // required fields
   application:"PLATFORM",
-  source:"APPLICATION",
+  source:"{{camelCaseEntity}}",
   name:"",
   createdBy:"",
   ipAddress:"",
   status:"SUCCESS", //by default
-  eventDateTime:new Date().toISOString(),
+  eventDateTime:Date.now(),
   keyDataAsJSON:"",
   details:"",
 //non required fields
@@ -90,7 +90,7 @@ module.exports.getAll = (limit) => {
         throw new Error("IllegalArgumentException: limit is null or undefined");
       }
       docketObject.name="{{camelCaseEntity}}_getAll"
-      docketObject.keyDataAsJSON="{{camelCaseEntity}}Object";
+      docketObject.keyDataAsJSON=`getAll with limit ${limit}`;
       docketObject.details=`{{camelCaseEntity}} getAll method`;
       docketClient.postToDocket(docketObject);
 
