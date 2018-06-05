@@ -177,7 +177,7 @@ module.exports.getOne=(attribute,value)=> {
       });
     } catch (e) {
       docketObject.name="{{camelCaseEntity}}_ExceptionOngetOne"
-      docketObject.keyDataAsJSON="{{camelCaseEntity}}Object";
+      docketObject.keyDataAsJSON=`{{camelCaseEntity}}Object ${attribute} with value ${value}`;
       docketObject.details=`caught Exception on {{camelCaseEntity}}_getOne ${e.message}`;
       docketClient.postToDocket(docketObject);
       debug(`caught exception ${e}`);
