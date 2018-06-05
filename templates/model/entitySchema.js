@@ -12,5 +12,5 @@ module.exports.schema = {
           "maxLength": 64
     },
   },
-  "required": []
+  "required": ["tenantId"]
 };
