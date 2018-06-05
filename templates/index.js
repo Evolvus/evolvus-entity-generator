@@ -49,7 +49,7 @@ module.exports.save = ({{camelCaseEntity}}Object) => {
          throw new Error("IllegalArgumentException: {{camelCaseEntity}}Object is null or undefined");
       }
       docketObject.name="{{camelCaseEntity}}_save"
-      docketObject.keyDataAsJSON={{camelCaseEntity}}Object;
+      docketObject.keyDataAsJSON=JSON.stringify({{camelCaseEntity}}Object);
       docketObject.details=`{{camelCaseEntity}} creation initiated`;
       docketClient.postToDocket(docketObject);
       var res = validate({{camelCaseEntity}}Object, {{schemaName}});
@@ -71,7 +71,7 @@ module.exports.save = ({{camelCaseEntity}}Object) => {
       });
     } catch (e) {
       docketObject.name="{{camelCaseEntity}}_ExceptionOnSave"
-      docketObject.keyDataAsJSON={{camelCaseEntity}}Object;
+      docketObject.keyDataAsJSON=JSON.stringify({{camelCaseEntity}}Object);
       docketObject.details=`caught Exception on {{camelCaseEntity}}_save ${e.message}`;
       docketClient.postToDocket(docketObject);
       debug(`caught exception ${e}`);
