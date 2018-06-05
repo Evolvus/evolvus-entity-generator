@@ -2,7 +2,7 @@
 /*
  ** Get all the required packages
  */
-const _ = require("underscore");
+ 
 /*
  * initContext takes the command line arguments and builds a 'context' object that
  * is subsequently used by the code templates.

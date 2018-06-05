@@ -5,7 +5,6 @@
 /*
  ** Get all the required packages
  */
-const _ = require("underscore");
 const program = require('commander');
 const context = require("./context");
 const gen = require("./generator");

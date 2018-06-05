@@ -22,7 +22,6 @@
   "license": "ISC",
   "dependencies": {
     "commander": "^2.15.1",
-    "moustache": "0.0.2",
-    "underscore": "^1.9.0"
+    "moustache": "0.0.2"
   }
 }
