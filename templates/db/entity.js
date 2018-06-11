@@ -77,7 +77,34 @@ module.exports.findOne = (attribute, value) => {
   });
 };
 
-//
+// Finds all the {{camelCaseEntity}}s which matches the value parameter from {{camelCaseEntity}} collection
+// If there is no object matching the attribute/value, return empty object i.e. {}
+// null, undefined should be rejected with Invalid Argument Error
+// Should return a Promise
+module.exports.findMany = (attribute, value) => {
+  return new Promise((resolve, reject) => {
+    try {
+      var query = {};
+      query[attribute] = value;
+      {{schemaCollection}}.find(query)
+        .then((data) => {
+          debug(`{{camelCaseEntity}} found ${data}`);
+          resolve(data);
+        }, (err) => {
+          debug(`rejected find.. ${err}`);
+          reject(err);
+        })
+        .catch((e) => {
+          debug(`exception on find: ${e}`);
+          reject(e);
+        });
+    } catch (e) {
+      debug(`caught exception: ${e}`);
+      reject(e);
+    }
+  });
+};
+
 // Finds the {{camelCaseEntity}} for the id parameter from the {{camelCaseEntity}} collection
 // If there is no object matching the id, return empty object i.e. {}
 // null, undefined, invalid objects should be rejected with Invalid Argument Error

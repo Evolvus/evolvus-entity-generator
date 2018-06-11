@@ -235,4 +235,49 @@ describe("db {{camelCaseEntity}} testing", () => {
         .notify(done);
     });
   });
+
+  describe("testing {{camelCaseEntity}}.findMany", () => {
+    // Delete all records, insert two record
+    // 1. Query by one attribute and it should return all {{camelCaseEntity}}s having attribute value
+    // 2. Query by an arbitrary attribute value and it should return {}
+    let {{camelCaseEntity}}1={
+      //add valid object
+
+    };
+    let {{camelCaseEntity}}2={
+      //add valid object with one attribute value same as "{{camelCaseEntity}}1"
+
+    };
+    // delete all records and insert two {{camelCaseEntity}}s
+    beforeEach((done) => {
+      {{camelCaseEntity}}.deleteAll()
+        .then((res) => {
+          {{camelCaseEntity}}.save({{camelCaseEntity}}1)
+            .then((res) => {
+              {{camelCaseEntity}}.save({{camelCaseEntity}}2)
+                .then((savedObj) => {
+                  done();
+                });
+            });
+        });
+    });
+
+    it("should return array of objects for valid attribute value", (done) => {
+      // take one valid attribute and its value
+      let attributename="";
+      let attributeValue="";
+      let res = {{camelCaseEntity}}.findMany(attributename, attributeValue);
+      expect(res).to.eventually.be.a("array");
+      //enter proper length according to input attribute
+      expect(res).to.eventually.have.length(1);
+      done();
+    });
+
+    it("should return empty array as no {{camelCaseEntity}} is identified by this attribute ", (done) => {
+      let res = {{camelCaseEntity}}.findMany(validAttribute, invalidValue);
+      expect(res)
+        .to.eventually.to.eql([])
+        .notify(done);
+    });
+  });
 });

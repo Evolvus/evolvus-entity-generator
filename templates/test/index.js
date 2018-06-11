@@ -409,4 +409,98 @@ describe('{{camelCaseEntity}} model validation', () => {
       }
     });
   });
+
+
+  describe("testing {{camelCaseEntity}}.getMany",()=> {
+      let object1={
+        //add one valid {{camelCaseEntity}} object here
+
+      },object2={
+        //add one more valid {{camelCaseEntity}} object here
+
+      };
+      beforeEach((done) => {
+        db.deleteAll().then((res) => {
+          db.save(object1).then((res) => {
+            db.save(object2).then((res) => {
+                done();
+            });
+          });
+        });
+      });
+
+      it("should return array of {{camelCaseEntity}} records identified by attribute",(done)=> {
+        try {
+          // take one attribute from object1 or object2 and its value
+          let res = {{camelCaseEntity}}.getMany(attribute of object1/object2,its value);
+          expect(res).to.eventually.be.a("array");
+          //enter proper length according to input value
+          expect(res).to.eventually.have.length(1);
+          done();
+        } catch (e) {
+          expect.fail(e, null, `exception: ${e}`);
+        }
+      });
+
+      it('should return empty array i.e. [] as no {{camelCaseEntity}} is identified by this attribute', (done) => {
+        try {
+          // replace validAttribute and add a bad value to it
+          var res = {{camelCaseEntity}}.getMany(validAttribute,badValue);
+          expect(res).to.eventually.to.eql([])
+            .notify(done);
+        } catch (e) {
+          expect.fail(e, null, `exception: ${e}`);
+        }
+      });
+
+      it("should throw IllegalArgumentException for undefined Attribute parameter ", (done) => {
+        try {
+          //replace validvalue with a valid value for an attribute
+          let undefinedAttribute;
+          let res = {{camelCaseEntity}}.getMany(undefinedAttribute,validValue);
+          expect(res)
+            .to.eventually.to.be.rejectedWith("IllegalArgumentException")
+            .notify(done);
+        } catch (e) {
+          expect.fail(e, null, `exception: ${e}`);
+        }
+      });
+
+      it("should throw IllegalArgumentException for undefined Attribute parameter ", (done) => {
+        try {
+          // replace validAttribute with a valid attribute name
+          let undefinedValue;
+          let res = {{camelCaseEntity}}.getMany(validAttribute,undefinedValue);
+          expect(res)
+            .to.eventually.to.be.rejectedWith("IllegalArgumentException")
+            .notify(done);
+        } catch (e) {
+          expect.fail(e, null, `exception: ${e}`);
+        }
+      });
+
+      it("should throw IllegalArgumentException for null attribute parameter ", (done) => {
+        try {
+          //replace validValue with a valid value for an attribute
+          let res = {{camelCaseEntity}}.getMany(null,validValue);
+          expect(res)
+            .to.eventually.to.be.rejectedWith("IllegalArgumentException")
+            .notify(done);
+        } catch (e) {
+          expect.fail(e, null, `exception: ${e}`);
+        }
+      });
+
+      it("should throw IllegalArgumentException for null value parameter ", (done) => {
+        try {
+          //replace attributeValue with a valid attribute name
+          let res = {{camelCaseEntity}}.getMany(attributeValue,null);
+          expect(res)
+            .to.eventually.to.be.rejectedWith("IllegalArgumentException")
+            .notify(done);
+        } catch (e) {
+          expect.fail(e, null, `exception: ${e}`);
+        }
+      });
+    });
 });
